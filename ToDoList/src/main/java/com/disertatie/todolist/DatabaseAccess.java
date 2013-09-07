@@ -40,7 +40,7 @@ public class DatabaseAccess extends SQLiteOpenHelper
         sqLiteDatabase.execSQL("CREATE TABLE " + TABLENAME + " ( " + IDCOLNAME + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + NAMECOLNAME + " TEXT,"
                 + DESCCOLNAME + " TEXT,"
-                + BYCOLNAME   + " DATETIME )"
+                + BYCOLNAME   + " TEXT )"
         );
     }
 
@@ -51,13 +51,34 @@ public class DatabaseAccess extends SQLiteOpenHelper
         onCreate(sqLiteDatabase);
     }
 
+    public int GetNbOfToDoItems()
+    {
+        int nbOfItems = 0;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select count(*) as count from " + TABLENAME, null);
+
+        //SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY/mm/dd HH:mm:ss");
+
+        if (cursor.getCount() != 0) {
+            if (cursor.moveToFirst()) {
+                do {
+                    nbOfItems = Integer.parseInt(cursor.getString(cursor.getColumnIndex("count")));
+                } while (cursor.moveToNext());
+            }
+        }
+        cursor.close();
+        db.close();
+
+        return nbOfItems;
+    }
     public ArrayList<ToDoModel> GetToDoList() throws ParseException
     {
         ArrayList<ToDoModel> list = new ArrayList<ToDoModel>();
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("select * from " + TABLENAME, null);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY/mm/dd HH:mm:ss");
+        //SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY/mm/dd HH:mm:ss");
 
         if (cursor.getCount() != 0) {
             if (cursor.moveToFirst()) {
@@ -65,7 +86,7 @@ public class DatabaseAccess extends SQLiteOpenHelper
                     ToDoModel item = new ToDoModel(cursor.getInt(cursor.getColumnIndex(IDCOLNAME))
                     , cursor.getString(cursor.getColumnIndex(NAMECOLNAME))
                     , cursor.getString(cursor.getColumnIndex(DESCCOLNAME))
-                    , dateFormat.parse(cursor.getString(cursor.getColumnIndex(BYCOLNAME)))
+                    , cursor.getString(cursor.getColumnIndex(BYCOLNAME))
                     );
 
                    list.add(item);
@@ -76,5 +97,57 @@ public class DatabaseAccess extends SQLiteOpenHelper
         cursor.close();
         db.close();
         return list;
+    }
+
+    public void addProduct(ToDoModel toDoModel) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(NAMECOLNAME, toDoModel.GetToDoName());
+        contentValues.put(DESCCOLNAME, toDoModel.GetToDoDescription());
+        contentValues.put(BYCOLNAME, String.valueOf(toDoModel.GetToDoBy()));
+        db.insert(TABLENAME, null, contentValues);
+        db.close();
+    }
+
+    public ToDoModel GetToDoListItem(String itemId) throws ParseException
+    {
+       ToDoModel item = new ToDoModel(0,"","","") ;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + TABLENAME + " where " + NAMECOLNAME + "='" + itemId + "'", null);
+
+        if (cursor.getCount() != 0) {
+            if (cursor.moveToFirst()) {
+                do {
+                     item = new ToDoModel(cursor.getInt(cursor.getColumnIndex(IDCOLNAME))
+                            , cursor.getString(cursor.getColumnIndex(NAMECOLNAME))
+                            , cursor.getString(cursor.getColumnIndex(DESCCOLNAME))
+                            , cursor.getString(cursor.getColumnIndex(BYCOLNAME))
+                    );
+                } while (cursor.moveToNext());
+            }
+        }
+        cursor.close();
+        db.close();
+       return item;
+    }
+
+    public void DeleteToDoItem(String itemId)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLENAME, NAMECOLNAME + " = ?", new String[] { itemId });
+        db.close();
+    }
+
+    public void UpdateToDo(ToDoModel toDo)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(NAMECOLNAME, toDo.GetToDoName());
+        contentValues.put(DESCCOLNAME, toDo.GetToDoDescription());
+        contentValues.put(BYCOLNAME, toDo.GetToDoBy());
+
+        db.update(TABLENAME, contentValues, NAMECOLNAME + " = ?", new String[] {toDo.GetToDoName() });
+
+        db.close();
     }
 }

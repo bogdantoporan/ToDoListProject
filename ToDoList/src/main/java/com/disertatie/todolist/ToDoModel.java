@@ -10,9 +10,14 @@ public class ToDoModel
     private int id;
     private String toDoName;
     private String toDoDescription;
-    private Date toDoBy;
+    private String toDoBy;
 
-    public ToDoModel(int _id, String _toDoName, String _toDoDescription, Date _toDoBy)
+    public ToDoModel()
+    {
+
+    }
+
+    public ToDoModel(int _id, String _toDoName, String _toDoDescription, String _toDoBy)
     {
         id = _id;
         toDoName = _toDoName;
@@ -39,7 +44,7 @@ public class ToDoModel
     }
 
     //Getter and Setter for toDoBy
-    public Date GetToDoBy()
+    public String GetToDoBy()
     {
         return toDoBy;
     }
