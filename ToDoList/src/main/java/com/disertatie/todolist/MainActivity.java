@@ -1,8 +1,16 @@
 package com.disertatie.todolist;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,7 +25,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity
+{
 
     GridView gridView;
     String[] TASKS;
@@ -55,8 +64,10 @@ public class MainActivity extends Activity {
                  i++;
              }
 
+             (new Thread(new CheckForTasks(tasks, this))).start();
+             //db.close();
 
-             db.close();
+
              gridView = (GridView) findViewById(R.id.gridView);
                  gridView.setAdapter(new CustomAdapter(this, TASKS));
 
@@ -83,15 +94,16 @@ public class MainActivity extends Activity {
              return true;
          }
 
+         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
          @Override
          public boolean onOptionsItemSelected(MenuItem item)
          {
              switch (item.getItemId())
              {
                  case R.id.add:
-                     Intent addintent = new Intent(MainActivity.this,
+                     Intent intent = new Intent(this,
                              AddRecord.class);
-                     startActivity(addintent);
+                     startActivity(intent);
                      return true;
                  default:
                      return super.onOptionsItemSelected(item);

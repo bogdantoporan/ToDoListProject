@@ -3,7 +3,7 @@ package com.disertatie.todolist;
 import java.util.Date;
 
 /**
- * Created by Bogdan on 03.09.2013.
+ * Created by Dan Petran on 03.09.2013.
  */
 public class ToDoModel
 {
@@ -11,6 +11,7 @@ public class ToDoModel
     private String toDoName;
     private String toDoDescription;
     private String toDoBy;
+    private Boolean taskNotified = false;
 
     public ToDoModel()
     {
@@ -47,5 +48,15 @@ public class ToDoModel
     public String GetToDoBy()
     {
         return toDoBy;
+    }
+
+    public void SetTaskNotified()
+    {
+        taskNotified = true;
+    }
+
+    public Boolean GetTaskNotified()
+    {
+        return taskNotified;
     }
 }

@@ -15,7 +15,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
- * Created by Bogdan on 03.09.2013.
+ * Created by Dan Petran on 03.09.2013.
  */
 public class DatabaseAccess extends SQLiteOpenHelper
 {

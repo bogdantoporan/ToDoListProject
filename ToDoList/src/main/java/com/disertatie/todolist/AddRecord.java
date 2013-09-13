@@ -3,7 +3,7 @@ package com.disertatie.todolist;
 import android.app.Activity;
 
 /**
- * Created by Test on 9/6/13.
+ * Created by Dan on 9/6/13.
  */
 import android.app.Activity;
 import android.content.Intent;
